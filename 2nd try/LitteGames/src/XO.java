@@ -1,4 +1,12 @@
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class XO implements Game{
@@ -66,8 +74,43 @@ public class XO implements Game{
 		}
 	}
 	
-	private class XOView{
+	private class XOView extends JPanel{
 		
+		private final Icon XICON=new ImageIcon("Xicon.png");
+		private final Icon OICON=new ImageIcon("Oicon.png");
+		private final Icon EMPTYICON=new ImageIcon("emptyicon.jpg");
+		private JButton[][] field;
+		private JPanel buttonpanel=new JPanel(new GridLayout(3,3));
+		private XOModel model;
+		private XOController controller;
+		
+		public XOView(XOModel model, XOController controller) {
+			super(new BorderLayout());
+			this.model=model;
+			this.controller=controller;
+			
+			add(new JLabel("XO Game"),BorderLayout.NORTH);
+			add(buttonpanel,BorderLayout.CENTER);
+			JButton button;
+			for(int i=0;i<3;i++) {
+				for(int j=0;j<3;j++) {
+					button=new JButton(EMPTYICON);
+					button.addActionListener(controller);
+					button.setActionCommand("("+i+","+j+")");
+					field[i][j]=button;
+					buttonpanel.add(button);
+				}
+			}
+		}
+		public void updateButton(int r,int c) {
+			
+		}
+	}
+	
+	private class XOController implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			;
+		}
 	}
 	
 	public XO(String name,Icon icon) {
