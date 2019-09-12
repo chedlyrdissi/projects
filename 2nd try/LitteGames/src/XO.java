@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -142,6 +143,9 @@ public class XO implements Game{
 					break;
 			}
 		}
+		public JPanel play() {
+			return view;
+		}
 	}
 	
 	public XO(String name,Icon icon) {
@@ -179,5 +183,12 @@ public class XO implements Game{
 	//to implement
 	public long bestFinishTime() {
 		return 0;
+	}
+	
+	public static void main(String[] args) {
+		JFrame frame=new JFrame();
+		XOController controller=new XOController( new XOModel() );
+		frame.add(controller.play());
+		frame.setVisible(true);
 	}
 }
