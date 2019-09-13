@@ -1,15 +1,7 @@
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class XO implements Game{
 	
@@ -20,10 +12,11 @@ public class XO implements Game{
 	private long bestFinishTime;
 	private Time start;
 	
-	private class XOModel{
+	private static class XOModel{
 		private char[][] field={{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
 		private char player='X';
 		private int steps=0; 
+		private boolean canplay=true;
 		
 		public char getPlayer() {
 			return player;
@@ -53,16 +46,19 @@ public class XO implements Game{
 		}
 		public char winner() {
 			
-			if (field[0][0]==field[1][1] && field[1][1]==field[2][2] ||
-					field[0][2]==field[1][1] && field[1][1]==field[2][0]) {
+			if ((field[0][0]==field[1][1] && field[1][1]==field[2][2] ||
+					field[0][2]==field[1][1] && field[1][1]==field[2][0]) && field[1][1]!=' ' ) {
+				canplay=false;
 				return field[1][1];
 			}
 			
 			for (int i=0;i<3;i++) {
-				if ( field[i][0]==field[i][1] && field[i][1]==field[i][2] ) {
+				if ( field[i][0]==field[i][1] && field[i][1]==field[i][2] && field[i][1]!=' ') {
+					canplay=false;
 					return field[i][0];
 				}
-				if ( field[0][i]==field[1][i] && field[1][i]==field[2][i] ) {
+				if ( field[0][i]==field[1][i] && field[1][i]==field[2][i] && field[1][i]!=' ') {
+					canplay=false;
 					return field[0][i];
 				}
 			}
@@ -70,80 +66,88 @@ public class XO implements Game{
 			if (!done()) {
 				return ' ';
 			}
-			
+
 			return 'D';
 			
 		}
+		public boolean getCanPlay() {
+			return canplay;
+		}
 	}
 	
-	private class XOView extends JPanel{
+	private static class XOView extends JPanel{
 		
-		private final Icon XICON=new ImageIcon("Xicon.png");
-		private final Icon OICON=new ImageIcon("Oicon.png");
-		private final Icon EMPTYICON=new ImageIcon("emptyicon.jpg");
-		private JButton[][] field;
+		private final Icon XICON=new ImageIcon("src/Xicon.png");
+		private final Icon OICON=new ImageIcon("src/Oicon.png");
+		private final Icon EMPTYICON=new ImageIcon("src/emptyicon.jpg");
+		private JButton[][] field=new JButton[3][3];
 		private JLabel playerLabel=new JLabel();
 		private JPanel buttonpanel=new JPanel(new GridLayout(3,3));
 		private XOModel model;
-		private XOController controller;
 		
-		public XOView(XOModel model, XOController controller) {
+		public XOView(XOModel model,XOController controller) {
 			super(new BorderLayout());
 			this.model=model;
-			this.controller=controller;
 			add(playerLabel,BorderLayout.EAST);
-			updatePlayer();
 			add(new JLabel("XO Game"),BorderLayout.NORTH);
 			add(buttonpanel,BorderLayout.CENTER);
-			JButton button;
 			for(int i=0;i<3;i++) {
 				for(int j=0;j<3;j++) {
-					button=new JButton(EMPTYICON);
-					button.addActionListener(controller);
-					button.setActionCommand("("+i+","+j+")");
-					field[i][j]=button;
-					buttonpanel.add(button);
+					field[i][j]=new JButton(EMPTYICON);
+					field[i][j].addActionListener(controller);
+					field[i][j].setActionCommand("("+i+","+j+")");
+					buttonpanel.add(field[i][j]);
+				}
+			}
+			buttonpanel.setPreferredSize(new Dimension(150, 150));
+		}
+		private void updateButton(int i,int j) {
+			if (model.getCell(i,j)=='O') {
+				this.field[i][j].setIcon(OICON);
+			}
+			if (model.getCell(i,j)=='X') {
+				this.field[i][j].setIcon(XICON);
+			}
+			
+		}
+		public void update() {
+			playerLabel.setText("player "+model.getPlayer()+"'s turn");
+			for(int i=0;i<3;i++) {
+				for(int j=0;j<3;j++) {
+					updateButton(i,j);
 				}
 			}
 		}
-		public void updateButton(int r,int c) {
-			if (model.getCell(r,c)=='X') {
-				this.field[r][c].setIcon(XICON);
-			}else if (model.getCell(r,c)=='O') {
-				this.field[r][c].setIcon(OICON);
-			}
-		}
-		public void updatePlayer() {
-			playerLabel.setText("player "+model.getPlayer()+"'s turn");
-		}
 	}
 	
-	private class XOController implements ActionListener{
+	private static class XOController implements ActionListener{
 		private XOModel model;
 		private XOView view;
-		public XOController(XOModel model) {
-			this.model=model;
+		public XOController() {
+			this.model=new XOModel();
 			this.view=new XOView(model,this);
+			view.update();
 		}
 		public void actionPerformed(ActionEvent e) {
-			String command=e.getActionCommand();
-			int r=Integer.parseInt(command.substring(1,2));
-			int c=Integer.parseInt(command.substring(3,4));
-			if(model.getCell(r,c)==' ') {
-				model.setCell(r,c);
-				view.updateButton(r,c);
-				view.updatePlayer();
-			}
-			switch(model.winner()) {
-			case 'X':JOptionPane.showConfirmDialog(null,"player X wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
-					break;
-			case 'O':JOptionPane.showInternalMessageDialog(null,"player O wins","GAME OVER",JOptionPane.PLAIN_MESSAGE);
-					break;
-			case 'D':JOptionPane.showInternalMessageDialog(null,"It is a draw","GAME OVER",JOptionPane.PLAIN_MESSAGE);
-					break;
+			if(model.getCanPlay()) {
+				String command=e.getActionCommand();
+				int r=Integer.parseInt(command.substring(1,2));
+				int c=Integer.parseInt(command.substring(3,4));
+				if(model.getCell(r,c)==' ') {
+					model.setCell(r,c);
+					view.update();
+				}
+				switch(model.winner()) {
+				case 'X':JOptionPane.showConfirmDialog(null,"player X wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
+						break;
+				case 'O':JOptionPane.showConfirmDialog(null,"player O wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
+						break;
+				case 'D':JOptionPane.showConfirmDialog(null,"DRAW","GAME OVER",JOptionPane.DEFAULT_OPTION);
+						break;
+				}
 			}
 		}
-		public JPanel play() {
+		public JPanel getPanel() {
 			return view;
 		}
 	}
@@ -183,12 +187,17 @@ public class XO implements Game{
 	//to implement
 	public long bestFinishTime() {
 		return 0;
+	}	
+	public JPanel getGame() {
+		return (new XOController()).getPanel();
 	}
+	
 	
 	public static void main(String[] args) {
 		JFrame frame=new JFrame();
-		XOController controller=new XOController( new XOModel() );
-		frame.add(controller.play());
+		XO game=new XO("xo",new ImageIcon("XOICON.png"));
+		frame.add(game.getGame());
+		frame.pack();
 		frame.setVisible(true);
 	}
 }
