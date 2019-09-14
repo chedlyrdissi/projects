@@ -5,8 +5,8 @@ import javax.swing.*;
 
 public class XO implements Game{
 	
-	private String name;
-	private Icon gameicon;
+	private String name="XO";
+	private Icon gameicon=new ImageIcon("src/XOICON.png");
 	private boolean favorite;
 	private boolean finished;
 	private long bestFinishTime;
@@ -197,13 +197,6 @@ public class XO implements Game{
 		}
 	}
 	
-	public XO(String name,Icon icon) {
-		
-		this.name=name;
-		this.gameicon=icon;
-		
-	}
-	
 	//to implement
 	public String getName() {
 		return name;
@@ -237,12 +230,4 @@ public class XO implements Game{
 		return (new XOController()).getPanel();
 	}
 	
-	
-	public static void main(String[] args) {
-		JFrame frame=new JFrame();
-		XO game=new XO("xo",new ImageIcon("XOICON.png"));
-		frame.add(game.getGame());
-		frame.pack();
-		frame.setVisible(true);
-	}
 }
