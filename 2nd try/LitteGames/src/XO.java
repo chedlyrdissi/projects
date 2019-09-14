@@ -95,16 +95,16 @@ public class XO implements Game{
 	
 	private static class XOView extends JPanel{
 		
-		private final Icon XICON=new ImageIcon("src/Xicon.png");
-		private final Icon OICON=new ImageIcon("src/Oicon.png");
-		private final Icon EMPTYICON=new ImageIcon("src/emptyicon.jpg");
+		private final Icon XICON=new ImageIcon("C:/Users/Chedl/Desktop/side_projects/2nd try/LitteGames/src/Xicon.png");
+		private final Icon OICON=new ImageIcon("C:/Users/Chedl/Desktop/side_projects/2nd try/LitteGames/src/Oicon.png");
+		private final Icon EMPTYICON=new ImageIcon("C:/Users/Chedl/Desktop/side_projects/2nd try/LitteGames/src/emptyicon.jpg");
 		private JButton[][] field=new JButton[3][3];
 		private JLabel playerLabel=new JLabel();
 		private JPanel buttonpanel=new JPanel(new GridLayout(3,3));
 		private JButton resetbutton;
 		private XOModel model;
 		
-		public XOView(XOModel model,XOController controller) {
+		public XOView(XOModel model,ActionListener controller) {
 			
 			super(new BorderLayout());
 			this.model=model;
@@ -182,14 +182,17 @@ public class XO implements Game{
 					model.setCell(r,c);
 					view.update();
 				}
-				switch(model.winner()) {
-				case 'X':JOptionPane.showConfirmDialog(null,"player X wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
-						break;
-				case 'O':JOptionPane.showConfirmDialog(null,"player O wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
-						break;
-				case 'D':JOptionPane.showConfirmDialog(null,"DRAW","GAME OVER",JOptionPane.DEFAULT_OPTION);
-						break;
-				}
+				initiateEnd();
+			}
+		}
+		private void initiateEnd(){
+			switch(model.winner()) {
+			case 'X':JOptionPane.showConfirmDialog(null,"player X wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
+					break;
+			case 'O':JOptionPane.showConfirmDialog(null,"player O wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
+					break;
+			case 'D':JOptionPane.showConfirmDialog(null,"DRAW","GAME OVER",JOptionPane.DEFAULT_OPTION);
+					break;
 			}
 		}
 		public JPanel getPanel() {
@@ -197,6 +200,55 @@ public class XO implements Game{
 		}
 	}
 	
+	private static class XOPlayerController implements ActionListener{
+		
+		private XOModel model;
+		private XOView view;
+		
+		public XOPlayerController() {
+			this.model=new XOModel();
+			this.view=new XOView(model,this);
+			view.update();
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			
+			String command=e.getActionCommand();
+			if(model.getPlayer()=='X') {	
+				
+				if (command.equals("reset")) {
+					model.reStart();
+					view.update();
+					return;
+				}
+				
+				if(model.getCanPlay()) {
+					
+					int r=Integer.parseInt(command.substring(1,2));
+					int c=Integer.parseInt(command.substring(3,4));
+					if(model.getCell(r,c)==' ') {
+						model.setCell(r,c);
+						view.update();
+					}
+					initiateEnd();
+				}
+			} else {
+				
+			}
+		}
+		
+		private void initiateEnd(){
+			switch(model.winner()) {
+			case 'X':JOptionPane.showConfirmDialog(null,"player X wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
+					break;
+			case 'O':JOptionPane.showConfirmDialog(null,"player O wins","GAME OVER",JOptionPane.DEFAULT_OPTION);
+					break;
+			case 'D':JOptionPane.showConfirmDialog(null,"DRAW","GAME OVER",JOptionPane.DEFAULT_OPTION);
+					break;
+			}
+		}
+		
+	}
 	//to implement
 	public String getName() {
 		return name;
@@ -209,7 +261,7 @@ public class XO implements Game{
 	
 	//to implement
 	public JPanel play() {
-		return null;
+		return (new XOController()).getPanel();
 	}
 	
 	//to implement
@@ -226,8 +278,12 @@ public class XO implements Game{
 	public long bestFinishTime() {
 		return 0;
 	}	
-	public JPanel getGame() {
-		return (new XOController()).getPanel();
+	
+	public static void main(String[] args) {
+		JFrame frame=new JFrame("XO game");
+		frame.add(new XO().play());
+		frame.pack();
+		frame.setVisible(true);
 	}
 	
 }
