@@ -11,12 +11,31 @@ public class XO implements Game{
 	private boolean finished;
 	private long bestFinishTime;
 	private Time start;
+	public final int SOLO=1;
+	public final int MULTI=2;
+
 	
 	private static class XOModel{
 		private char[][] field={{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
 		private char player='X';
 		private int steps=0; 
 		private boolean canplay=true;
+		private boolean canstep=false;
+		private int nextstep;
+		
+		public XOModel() {
+		}
+		public XOModel(XOModel model) {
+			this.field=new char[3][3];
+			for(int i=0;i<9;i++) {
+				int r=i/3;
+				int c=i%3;
+				this.field[r][c]=model.field[r][c];
+			}
+			this.player=model.player;
+			this.steps=model.steps;
+			this.canplay=model.canplay;
+		}
 		
 		public char getPlayer() {
 			return player;
@@ -45,12 +64,18 @@ public class XO implements Game{
 		public boolean setCell(int r,int c) {
 			if (field[r][c]==' ') {
 				field[r][c]=player;
+				if(canstep) {
+					nextstep=r*3+c;
+					canstep=false;
+				}
 				changePlayer();
-				steps++;
 				return true;
 			}else {
 				return false;
 			}
+		}
+		public void setCanStep() {
+			canstep=true;
 		}
 		
 		public boolean done() {
@@ -90,6 +115,41 @@ public class XO implements Game{
 		}
 		public boolean getCanPlay() {
 			return canplay;
+		}
+		public static Stack<XOModel> getSolutions(XOModel model) {
+			
+			LinkedStack<XOModel> solutions=new LinkedStack<XOModel>();
+			LinkedStack<XOModel> ready=new LinkedStack<XOModel>();
+			solutions.push(model);
+			XOModel sol,sol2;
+			boolean ad;
+			char w;
+			
+			while(!solutions.isEmpty()) {
+				
+				sol=solutions.pop();
+				for(int pos=0;pos<9;pos++) {
+					
+					if ( sol.getCell(pos/3,pos%3)==' ' ) {
+						
+						sol2=new XOModel(sol);
+						ad=sol2.setCell(pos/3,pos%3);
+						w=sol2.winner();
+						
+						if(w=='O' || w=='D') {
+							
+							solutions.push(sol2);
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+			return solutions;
+		
 		}
 	}
 	
@@ -212,29 +272,40 @@ public class XO implements Game{
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			
 			String command=e.getActionCommand();
-			if(model.getPlayer()=='X') {	
-				
-				if (command.equals("reset")) {
-					model.reStart();
-					view.update();
-					return;
-				}
-				
-				if(model.getCanPlay()) {
-					
+			if (command.equals("reset")) {
+				model.reStart();
+				view.update();
+				return;
+			}
+			if(model.getCanPlay()) {	
 					int r=Integer.parseInt(command.substring(1,2));
 					int c=Integer.parseInt(command.substring(3,4));
 					if(model.getCell(r,c)==' ') {
 						model.setCell(r,c);
-						view.update();
 					}
+					view.update();
 					initiateEnd();
-				}
-			} else {
-				
+				Stack<XOModel> solutions=XOModel.getSolutions(model);
+				if(solutions.isEmpty()) {
+					int pos=0;
+					while(pos<9) {
+						if (model.getCell(pos/3,pos%3)==' ') {
+							model.setCell(pos/3,pos%3);
+							break;
+						}
+						pos++;
+					}
+				} else {
+					//select correct cell
+					
+					}
+				view.update();
+				initiateEnd();
 			}
+		}
+		public JPanel getPanel() {
+			return view;
 		}
 		
 		private void initiateEnd(){
@@ -245,8 +316,8 @@ public class XO implements Game{
 					break;
 			case 'D':JOptionPane.showConfirmDialog(null,"DRAW","GAME OVER",JOptionPane.DEFAULT_OPTION);
 					break;
-			}
 		}
+	}
 		
 	}
 	//to implement
@@ -260,8 +331,14 @@ public class XO implements Game{
 	}
 	
 	//to implement
-	public JPanel play() {
-		return (new XOController()).getPanel();
+	public JPanel play(int type) {
+		if (type==2) {
+			return (new XOController()).getPanel();
+		}
+		else {
+			return (new XOPlayerController()).getPanel();
+		}
+
 	}
 	
 	//to implement
@@ -281,7 +358,7 @@ public class XO implements Game{
 	
 	public static void main(String[] args) {
 		JFrame frame=new JFrame("XO game");
-		frame.add(new XO().play());
+		frame.add(new XO().play(1));
 		frame.pack();
 		frame.setVisible(true);
 	}
