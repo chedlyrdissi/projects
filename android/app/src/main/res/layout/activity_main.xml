@@ -9,49 +9,69 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#B15C44"
+        android:background="@color/colorPrimaryLight"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="-91dp"
-        tools:layout_editor_absoluteY="27dp">
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <TextView
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#8A2506"
+            android:background="@color/colorPrimaryDark"
             android:text="Temperature Crickets"
-            android:textSize="30sp" />
+            android:textSize="40dp" />
 
         <ImageView
             android:id="@+id/thermoimage"
-            android:layout_width="match_parent"
+            android:layout_width="237dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="30dp"
             app:srcCompat="@drawable/thermo" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:textAlignment="center" />
 
         <EditText
             android:id="@+id/inputchirps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="30dp"
             android:ems="10"
+            android:hint="enter the number of chirps in 14s"
             android:inputType="number"
-            android:text="enter the number of chirps in 14s" />
+            android:textAlignment="center" />
 
         <Button
             android:id="@+id/submitchirpbutton"
+            android:colors.
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#8A2506"
-            android:text="Submit" />
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="30dp"
+            android:background="@color/colorPrimaryDark"
+            android:text="Submit""colorAccent"
+        android:text="Submit" />
 
         <TextView
             android:id="@+id/temptext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="30dp"
             android:visibility="gone" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

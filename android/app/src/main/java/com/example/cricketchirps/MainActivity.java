@@ -2,6 +2,7 @@ package com.example.cricketchirps;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     TextView description;
-    Number inputchirps;
+    EditText inputchirps;
     TextView temptext;
     Button submitchirpbutton;
 
@@ -21,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         description=findViewById(R.id.description);
-        inputchirps=findViewById(R.id.inputchirps);
         temptext=findViewById(R.id.temptext);
         submitchirpbutton=findViewById(R.id.submitchirpbutton);
+        inputchirps = findViewById(R.id.inputchirps);
 
 
         description.setText("Did you know that you can tell the temperature by counting \n " +
