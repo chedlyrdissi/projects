@@ -35,12 +35,16 @@ public class MainActivity extends AppCompatActivity {
         submitchirpbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double nb=Double.parseDouble(String.valueOf(inputchirps.getText()))+40;
 
-                temptext.setText("The number you get will be an approximation of the outside temperature " +
+                if (!String.valueOf(inputchirps.getText()).isEmpty()){
+                    double nb=Double.parseDouble(String.valueOf(inputchirps.getText()))+40;
+
+                    temptext.setText("The number you get will be an approximation of the outside temperature " +
                             nb+" F");
 
-                temptext.setVisibility(View.VISIBLE);
+                    temptext.setVisibility(View.VISIBLE);
+                }
+
             }
         });
 

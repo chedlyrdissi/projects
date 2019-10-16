@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
             android:ems="10"
             android:hint="enter the number of chirps in 14s"
@@ -55,15 +55,13 @@
 
         <Button
             android:id="@+id/submitchirpbutton"
-            android:colors.
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="30dp"
             android:background="@color/colorPrimaryDark"
-            android:text="Submit""colorAccent"
-        android:text="Submit" />
+            android:text="Submit" />
 
         <TextView
             android:id="@+id/temptext"
